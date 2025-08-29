@@ -5,6 +5,7 @@ import humanImg from "./assets/images/human.jpg";
 import robotImg from "./assets/images/robot.jpg";
 import humanWav from "./assets/audio/human.wav";
 import robotWav from "./assets/audio/robot.wav";
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Overlay Button
 function OverlayButton({ isPlaying, onClick }) {
@@ -72,7 +73,7 @@ export default function App() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await fetch("http://localhost:8000/classify", {
+    const res = await fetch(`${API_URL}/classify`, {
       method: "POST",
       body: formData,
     });
