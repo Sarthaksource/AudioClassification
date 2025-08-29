@@ -45,4 +45,9 @@ It uses a **FastAPI backend** for ML inference and a **React (Vite) frontend** f
 
 ---
 
+## For Testing
+- Use Real and Fake .wav files from the data folder
+
+---
+
 ## IMPORTANT NOTE - This project was made only for learning purposes and may not be able to give correct results. There were only 200 Real and 200 Fake Audio samples used for this project, however using more samples would have increased the accuracy. 
