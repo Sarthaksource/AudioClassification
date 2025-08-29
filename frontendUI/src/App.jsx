@@ -194,6 +194,7 @@ export default function App() {
           </tbody>
         </table>
       )}
+      <footer className="fixed bottom-0 left-0 w-full bg-gray-200 text-center py-1 text-sm text-gray-700 shadow rounded-xl px-2">The processing may take some time</footer>
     </div>
   );
 }
