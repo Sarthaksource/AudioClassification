@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import { Play, Pause } from "lucide-react"; // icons
+import { Play, Pause, Loader2 } from "lucide-react"; // added Loader2 icon
 import humanImg from "./assets/images/human.jpg";
 import robotImg from "./assets/images/robot.jpg";
 import humanWav from "./assets/audio/human.wav";
@@ -38,6 +38,7 @@ function CardContent({ children, className }) {
 export default function App() {
   const [file, setFile] = useState(null);
   const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false); // NEW
   const [humanAudio] = useState(new Audio(humanWav));
   const [robotAudio] = useState(new Audio(robotWav));
   const [playing, setPlaying] = useState({ human: false, robot: false });
@@ -70,16 +71,25 @@ export default function App() {
 
   const classify = async () => {
     if (!file) return;
-    const formData = new FormData();
-    formData.append("file", file);
+    setLoading(true); // start loading
+    setResult(null);
 
-    const res = await fetch(`${API_URL}/classify`, {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
 
-    const data = await res.json();
-    setResult(data);
+      const res = await fetch(`${API_URL}/classify`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      setResult(data);
+    } catch (err) {
+      console.error("Classification error:", err);
+    } finally {
+      setLoading(false); // stop loading
+    }
   };
 
   const togglePlay = (type) => {
@@ -146,15 +156,23 @@ export default function App() {
 
       {/* Classify Button */}
       <button
-        className="px-4 py-2 rounded-2xl shadow bg-blue-500 text-white hover:bg-blue-600 mb-6 disabled:bg-gray-400 cursor-pointer"
+        className="px-4 py-2 rounded-2xl shadow bg-blue-500 text-white hover:bg-blue-600 mb-6 disabled:bg-gray-400 cursor-pointer flex items-center gap-2"
         onClick={classify}
-        disabled={!file}
+        disabled={!file || loading}
       >
-        Classify
+        {loading && <Loader2 className="animate-spin" size={20} />}
+        {loading ? "Processing..." : "Classify"}
       </button>
 
       {/* Results */}
-      {result && (
+      {loading && (
+        <div className="flex items-center gap-2 text-gray-600 mb-4">
+          <Loader2 className="animate-spin" size={24} />
+          <span>Analyzing your audio...</span>
+        </div>
+      )}
+
+      {result && !loading && (
         <table className="table-auto border-collapse border border-gray-400">
           <thead>
             <tr>
